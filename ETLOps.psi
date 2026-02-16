@@ -11,7 +11,7 @@ $BackPort = 800
 $DbPassword = "Mr5568###"
 $EtLConnString = "Sql Query ... "
 $Registry = "DockerReg.bineshafzar.ir"
-$ImageName = "$Registry/etl:1.0.1"
+$ImageName = "$Registry/etl:1.0.2"
 $DATABASE_VOLUME = "C:\db_ETL_data"
 # --- Docker Login ---
 Write-Host ">>> Logging into private registry"
