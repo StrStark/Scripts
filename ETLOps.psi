@@ -1,0 +1,100 @@
+# ==========================================
+# Rahgir Deployment Script for Windows
+# ==========================================
+
+Write-Host "========== Rahgir Deployment Script Started =========="
+
+# --- VARIABLES ---
+$BaseDir = "C:\ETL"
+$Email = "rezafathisamani1383@gmail.com"
+$ComposeFile = "$BaseDir\docker-compose.yml"
+$BackPort = 800
+$DbPassword = "Mr5568###"
+$BackRepo = "https://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@github.com/StrStark/ETL.git"
+$EtLConnString = "Data Source=DESKTOP-KVHBHO8\\STRSTARK;
+Integrated Security=True;
+Persist Security Info=False;
+Pooling=False;
+MultipleActiveResultSets=False;
+Encrypt=True;
+TrustServerCertificate=True;
+Application Name=\"SQL Server Management Studio\";
+Command Timeout=0"
+
+# --- Ensure Base Directory Exists ---
+Write-Host ">>> Ensuring base directory exists and is empty: $BaseDir"
+if (Test-Path $BaseDir) {
+    Remove-Item -Recurse -Force $BaseDir
+}
+New-Item -ItemType Directory -Path $BaseDir | Out-Null
+
+# --- Clone GitHub Repository ---
+Write-Host ">>> Cloning GitHub repository"
+Set-Location $BaseDir
+git clone $BackRepo
+
+# --- Generate docker-compose.yml ---
+Write-Host ">>> Generating docker-compose.yml"
+$composeContent = @"
+services:
+  BineshBack:
+    build:
+      context: ./ETL/
+      dockerfile: Dockerfile
+    image: etl:latest
+    ports:
+      - "800:8080"
+      - "801:8081"
+    environment:
+      CONN_STRING: "Host=BineshSnapshotDb;Port=5432;Database=BineshSnapshotDb;Username=StrStark;Password=$DbPassword"
+      ETL_DB: "$EtLConnString"
+    depends_on:
+      - BineshSnapshotDb
+
+  BineshSnapshotDb:
+    image: postgres:latest
+    container_name: BineshSnapshotDb
+    restart: always
+    environment:
+      POSTGRES_DB: BineshSnapshotDb
+      POSTGRES_USER: StrStark
+      POSTGRES_PASSWORD: $DbPassword
+    volumes:
+      - db_ETL_data:/var/lib/postgresql/data
+
+volumes:
+  db_ETL_data:
+"@
+
+$composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
+
+# --- Ensure Postgres Volume Directory Exists ---
+$DbDir = "C:\DataBase"
+Write-Host ">>> Ensuring Postgres volume exists at $DbDir"
+if (-not (Test-Path $DbDir)) { New-Item -ItemType Directory -Path $DbDir | Out-Null }
+
+# --- Build and Start Docker Compose ---
+Write-Host ">>> Building and starting Docker Compose stack"
+docker compose -f $ComposeFile up -d --build
+
+# --- Wait Until All Containers Are Running ---
+Write-Host ">>> Waiting for all containers to be running"
+do {
+    $running = docker compose -f $ComposeFile ps --services --filter "status=running" | Measure-Object | Select-Object -ExpandProperty Count
+    $total = docker compose -f $ComposeFile ps --services | Measure-Object | Select-Object -ExpandProperty Count
+    if ($running -lt $total) {
+        Write-Host ">>> Waiting for containers... ($running/$total running)"
+        Start-Sleep -Seconds 5
+    }
+} while ($running -lt $total)
+
+Write-Host ">>> All containers are running"
+
+# --- Optional: Windows Nginx Setup ---
+# Note: Windows doesn't use /etc/nginx, install nginx manually to a folder like C:\nginx
+# Example config path: C:\nginx\conf\sites-available\ETL.conf
+# You can manually set up reverse proxy or use IIS with URL Rewrite as an alternative.
+
+Write-Host "========== Binesh Deployment Completed =========="
+
+    
