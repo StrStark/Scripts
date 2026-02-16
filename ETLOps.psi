@@ -10,7 +10,7 @@ $Email = "rezafathisamani1383@gmail.com"
 $ComposeFile = "$BaseDir\docker-compose.yml"
 $BackPort = 800
 $DbPassword = "Mr5568###"
-$BackRepo = "https://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@github.com/StrStark/ETL.git"
+$BackRepo = "https://github.com/StrStark/ETL.git"
 $EtLConnString = "Sql Query ... "
 
 # --- Ensure Base Directory Exists ---
