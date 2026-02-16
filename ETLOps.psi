@@ -31,7 +31,7 @@ $composeContent = @"
 services:
   BineshBack:
     build:
-      context: ./ETL/
+      context: ./ETL/ETL
       dockerfile: Dockerfile
     image: etl:latest
     ports:
@@ -61,7 +61,7 @@ volumes:
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
 
 # --- Ensure Postgres Volume Directory Exists ---
-$DbDir = "C:\DataBase"
+$DbDir = "C:\db_ETL_data"
 Write-Host ">>> Ensuring Postgres volume exists at $DbDir"
 if (-not (Test-Path $DbDir)) { New-Item -ItemType Directory -Path $DbDir | Out-Null }
 
