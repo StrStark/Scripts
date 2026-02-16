@@ -18,3 +18,7 @@ bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/RahgirOp
 ```bash
 bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/ETLOps.psi)
 ```
+
+```bash
+iex (iwr "https://raw.githubusercontent.com/StrStark/Scripts/main/ETLOps.psi" -UseBasicParsing)
+```
