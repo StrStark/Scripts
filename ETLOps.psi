@@ -1,39 +1,36 @@
 # ==========================================
-# Rahgir Deployment Script for Windows
+# Rahgir Deployment Script (Registry Version)
 # ==========================================
 
 Write-Host "========== Rahgir Deployment Script Started =========="
 
 # --- VARIABLES ---
 $BaseDir = "C:\ETL"
-$Email = "rezafathisamani1383@gmail.com"
 $ComposeFile = "$BaseDir\docker-compose.yml"
 $BackPort = 800
 $DbPassword = "Mr5568###"
-$BackRepo = "https://github.com/StrStark/ETL.git"
 $EtLConnString = "Sql Query ... "
+$Registry = "DockerReg.bineshafzar.ir"
+$ImageName = "$Registry/etl:1.0.0"
+
+# --- Docker Login ---
+Write-Host ">>> Logging into private registry"
+docker login $Registry
 
 # --- Ensure Base Directory Exists ---
-Write-Host ">>> Ensuring base directory exists and is empty: $BaseDir"
+Write-Host ">>> Preparing base directory: $BaseDir"
 if (Test-Path $BaseDir) {
     Remove-Item -Recurse -Force $BaseDir
 }
 New-Item -ItemType Directory -Path $BaseDir | Out-Null
 
-# --- Clone GitHub Repository ---
-Write-Host ">>> Cloning GitHub repository"
-Set-Location $BaseDir
-git clone $BackRepo
-
 # --- Generate docker-compose.yml ---
 Write-Host ">>> Generating docker-compose.yml"
+
 $composeContent = @"
 services:
   BineshBack:
-    build:
-      context: ./ETL/ETL/
-      dockerfile: Dockerfile
-    image: etl:latest
+    image: $ImageName
     ports:
       - "800:8080"
       - "801:8081"
@@ -60,33 +57,12 @@ volumes:
 
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
 
-# --- Ensure Postgres Volume Directory Exists ---
-$DbDir = "C:\db_ETL_data"
-Write-Host ">>> Ensuring Postgres volume exists at $DbDir"
-if (-not (Test-Path $DbDir)) { New-Item -ItemType Directory -Path $DbDir | Out-Null }
+# --- Pull Latest Image ---
+Write-Host ">>> Pulling image from registry"
+docker pull $ImageName
 
-# --- Build and Start Docker Compose ---
-Write-Host ">>> Building and starting Docker Compose stack"
-docker compose -f $ComposeFile up -d --build
+# --- Start Stack ---
+Write-Host ">>> Starting Docker Compose"
+docker compose -f $ComposeFile up -d
 
-# --- Wait Until All Containers Are Running ---
-Write-Host ">>> Waiting for all containers to be running"
-do {
-    $running = docker compose -f $ComposeFile ps --services --filter "status=running" | Measure-Object | Select-Object -ExpandProperty Count
-    $total = docker compose -f $ComposeFile ps --services | Measure-Object | Select-Object -ExpandProperty Count
-    if ($running -lt $total) {
-        Write-Host ">>> Waiting for containers... ($running/$total running)"
-        Start-Sleep -Seconds 5
-    }
-} while ($running -lt $total)
-
-Write-Host ">>> All containers are running"
-
-# --- Optional: Windows Nginx Setup ---
-# Note: Windows doesn't use /etc/nginx, install nginx manually to a folder like C:\nginx
-# Example config path: C:\nginx\conf\sites-available\ETL.conf
-# You can manually set up reverse proxy or use IIS with URL Rewrite as an alternative.
-
-Write-Host "========== Binesh Deployment Completed =========="
-
-    
+Write-Host "========== Deployment Completed =========="
