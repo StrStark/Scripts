@@ -31,7 +31,7 @@ $composeContent = @"
 services:
   BineshBack:
     build:
-      context: ./ETL/ETL
+      context: ./ETL/ETL/
       dockerfile: Dockerfile
     image: etl:latest
     ports:
