@@ -49,7 +49,7 @@ services:
       POSTGRES_USER: StrStark
       POSTGRES_PASSWORD: $DbPassword
     volumes:
-      - $DATABASE_VOLUME :/var/lib/postgresql/
+      - C:\db_ETL_data :/var/lib/postgresql/
 "@
 
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
