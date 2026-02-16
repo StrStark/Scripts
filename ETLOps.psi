@@ -47,7 +47,7 @@ services:
       - BineshSnapshotDb
 
   BineshSnapshotDb:
-    image: postgres:latest
+    image: postgres:16
     container_name: BineshSnapshotDb
     restart: always
     environment:
@@ -55,7 +55,12 @@ services:
       POSTGRES_USER: StrStark
       POSTGRES_PASSWORD: $DbPassword
     volumes:
-      - $DATABASE_VOLUME :/var/lib/postgresql/
+      - db_ETL_data:/var/lib/postgresql/data
+
+
+volumes:
+  db_ETL_data:
+  
 "@
 
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
