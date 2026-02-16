@@ -11,15 +11,7 @@ $ComposeFile = "$BaseDir\docker-compose.yml"
 $BackPort = 800
 $DbPassword = "Mr5568###"
 $BackRepo = "https://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@github.com/StrStark/ETL.git"
-$EtLConnString = "Data Source=DESKTOP-KVHBHO8\\STRSTARK;
-Integrated Security=True;
-Persist Security Info=False;
-Pooling=False;
-MultipleActiveResultSets=False;
-Encrypt=True;
-TrustServerCertificate=True;
-Application Name=\"SQL Server Management Studio\";
-Command Timeout=0"
+$EtLConnString = "Sql Query ... "
 
 # --- Ensure Base Directory Exists ---
 Write-Host ">>> Ensuring base directory exists and is empty: $BaseDir"
