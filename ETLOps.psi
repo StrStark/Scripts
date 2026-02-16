@@ -24,6 +24,12 @@ if (Test-Path $BaseDir) {
 }
 New-Item -ItemType Directory -Path $BaseDir | Out-Null
 
+
+Write-Host ">>> Ensuring database directory exists"
+if (-not (Test-Path $DATABASE_VOLUME)) {
+    New-Item -ItemType Directory -Path $DATABASE_VOLUME | Out-Null
+}
+
 # --- Generate docker-compose.yml ---
 Write-Host ">>> Generating docker-compose.yml"
 
@@ -49,7 +55,7 @@ services:
       POSTGRES_USER: StrStark
       POSTGRES_PASSWORD: $DbPassword
     volumes:
-      - C:\db_ETL_data :/var/lib/postgresql/
+      - $DATABASE_VOLUME :/var/lib/postgresql/
 "@
 
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
