@@ -12,7 +12,7 @@ $DbPassword = "Mr5568###"
 $EtLConnString = "Sql Query ... "
 $Registry = "DockerReg.bineshafzar.ir"
 $ImageName = "$Registry/etl:1.0.0"
-
+$DATABASE_VOLUME = "C:\db_ETL_data"
 # --- Docker Login ---
 Write-Host ">>> Logging into private registry"
 docker login $Registry
@@ -49,10 +49,7 @@ services:
       POSTGRES_USER: StrStark
       POSTGRES_PASSWORD: $DbPassword
     volumes:
-      - db_ETL_data:/var/lib/postgresql/data
-
-volumes:
-  db_ETL_data:
+      - $DATABASE_VOLUME:/var/lib/postgresql/
 "@
 
 $composeContent | Out-File -FilePath $ComposeFile -Encoding UTF8
