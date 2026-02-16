@@ -15,3 +15,6 @@ bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/Metachem
 ```bash
 bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/RahgirOps.sh)
 ```
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/ETLOps.psi)
+```
