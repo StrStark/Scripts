@@ -22,6 +22,7 @@ DB_PASSWORD="Mr5568###"
 # OpenAI — set this as a server environment variable, never hardcode here
 # export OPENAI_API_KEY="sk-proj-..."  ← run this on the server before deploying
 OPENAI_API_KEY="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"
+OPENAI_API_KEY="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"
 OPENAI_MODEL="gpt-4o"
 
 FRONT_REPO="https://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@github.com/StrStark/BineshFront.git"
