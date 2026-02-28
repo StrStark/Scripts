@@ -154,8 +154,10 @@ certbot certonly --standalone \
   -d "$GRAFANA_DOMAIN"
 
 success "SSL certificates obtained!"
-info "  Rocket.Chat cert: /etc/letsencrypt/live/${RC_DOMAIN}/fullchain.pem"
-info "  Grafana cert:     /etc/letsencrypt/live/${GRAFANA_DOMAIN}/fullchain.pem"
+info "  Both domains share one cert stored at: /etc/letsencrypt/live/${RC_DOMAIN}/"
+# When multiple domains are passed to a single certbot command, all SANs are stored
+# under the FIRST domain's folder. There is no separate folder for GRAFANA_DOMAIN.
+CERT_DIR="/etc/letsencrypt/live/${RC_DOMAIN}"
 
 # ============================================================
 #   STEP 5 — Configure Nginx Virtual Hosts
@@ -183,8 +185,8 @@ server {
     listen 443 ssl;
     server_name ${RC_DOMAIN};
 
-    ssl_certificate     /etc/letsencrypt/live/${RC_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${RC_DOMAIN}/privkey.pem;
+    ssl_certificate     ${CERT_DIR}/fullchain.pem;
+    ssl_certificate_key ${CERT_DIR}/privkey.pem;
 
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
@@ -233,8 +235,8 @@ server {
     listen 443 ssl;
     server_name ${GRAFANA_DOMAIN};
 
-    ssl_certificate     /etc/letsencrypt/live/${GRAFANA_DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${GRAFANA_DOMAIN}/privkey.pem;
+    ssl_certificate     ${CERT_DIR}/fullchain.pem;
+    ssl_certificate_key ${CERT_DIR}/privkey.pem;
 
     ssl_protocols       TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
