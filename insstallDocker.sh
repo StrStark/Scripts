@@ -7,7 +7,6 @@ echo "=== Starting Docker installation ==="
 # 1. Update system packages
 echo "Updating system packages..."
 sudo apt-get update -y
-sudo apt-get upgrade -y
 
 # 2. Remove old versions of Docker
 echo "Removing old Docker versions if any..."
