@@ -22,3 +22,10 @@ bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/ETLOps.p
 ```bash
 iex (iwr "https://raw.githubusercontent.com/StrStark/Scripts/main/ETLOps.psi" -UseBasicParsing)
 ```
+
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/installNginx.sh)
+```
+```bash
+bash <(curl -Ls https://raw.githubusercontent.com/StrStark/Scripts/main/insstallDocker.sh)
+```
